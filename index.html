@@ -1016,18 +1016,72 @@ async function exportPNG() {
 }
 
 function bindUI(){
+// --- QUẢN LÝ DANH SÁCH VIDEO ---
+  let savedVideos = JSON.parse(localStorage.getItem('sb_custom_videos')) || [];
+
+  function renderVideoList() {
+    const grid = document.getElementById('yt-num-grid');
+    grid.innerHTML = '';
+    
+    if (savedVideos.length === 0) {
+      grid.innerHTML = '<div style="color: var(--muted); font-size: 12px; text-align: center; padding: 10px;">Chưa có video nào. Hãy thêm video ở trên!</div>';
+      return;
+    }
+
+    savedVideos.forEach((vid, index) => {
+      const item = document.createElement('div');
+      item.className = 'yt-video-item';
+      item.innerHTML = `
+        <button class="yt-num-btn" title="${vid.link}">${vid.name}</button>
+        <button class="yt-del-vid" title="Xóa video">✕</button>
+      `;
+      
+      // Sự kiện bấm vào tên video để mở link
+      item.querySelector('.yt-num-btn').addEventListener('click', () => {
+        window.open(vid.link, '_blank');
+      });
+      
+      // Sự kiện bấm nút xóa video
+      item.querySelector('.yt-del-vid').addEventListener('click', () => {
+        savedVideos.splice(index, 1);
+        localStorage.setItem('sb_custom_videos', JSON.stringify(savedVideos));
+        renderVideoList();
+        toast('Đã xóa video!', 'ok');
+      });
+      
+      grid.appendChild(item);
+    });
+  }
+
+  // Mở/Đóng modal
   document.getElementById('btn-yt-numbers').addEventListener('click', () => {
+    renderVideoList();
     document.getElementById('yt-num-modal').classList.add('visible');
   });
   document.getElementById('yt-num-close').addEventListener('click', () => {
     document.getElementById('yt-num-modal').classList.remove('visible');
   });
 
-  document.querySelectorAll('.yt-num-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const ytLink = this.getAttribute('data-youtube');
-      if (ytLink) { window.open(ytLink, '_blank'); }
-    });
+  // Xử lý thêm video mới
+  document.getElementById('btn-add-video').addEventListener('click', () => {
+    const nameInput = document.getElementById('input-vid-name');
+    const linkInput = document.getElementById('input-vid-link');
+    const name = nameInput.value.trim();
+    const link = linkInput.value.trim();
+
+    if (!name || !link) {
+      toast('Vui lòng nhập đầy đủ tên và link video!', 'warn');
+      return;
+    }
+
+    savedVideos.push({ name, link });
+    localStorage.setItem('sb_custom_videos', JSON.stringify(savedVideos));
+    renderVideoList();
+
+    // Reset ô nhập
+    nameInput.value = '';
+    linkInput.value = '';
+    toast('Đã thêm video thành công!', 'ok');
   });
 
   document.querySelectorAll('.tbtn[data-tool]').forEach(b=>b.addEventListener('click',()=>T.set(b.dataset.tool)));
