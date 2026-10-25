@@ -341,12 +341,20 @@ footer span:last-child{margin-left:auto}
 <div id="paste-hint">📋 Thả ảnh vào đây để dán</div>
 
 <div id="yt-num-modal">
-  <div class="yt-num-content">
+  <div class="yt-num-content" style="width: 420px;">
     <div class="yt-num-header">
-      <h3>Chọn Video</h3><button id="yt-num-close">✕</button>
+      <h3>Quản lý Danh sách Video</h3><button id="yt-num-close">✕</button>
     </div>
-    <div class="yt-num-grid">
-
+    <!-- Form thêm video mới -->
+    <div style="display: flex; gap: 6px; margin-bottom: 12px; flex-direction: column;">
+      <input type="text" id="vid-name" placeholder="Nhập tên video..." style="padding: 6px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--text);">
+      <input type="text" id="vid-link" placeholder="Dán link video (TikTok, YouTube,...)..." style="padding: 6px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--text);">
+      <button id="vid-add-btn" style="padding: 6px; background: var(--accent); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">+ Thêm video mới</button>
+    </div>
+    <div class="sep" style="width: 100%; margin: 8px 0;"></div>
+    <!-- Danh sách video động -->
+    <div id="yt-num-grid" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;">
+      <!-- Các item video sẽ được render tự động ở đây -->
     </div>
   </div>
 </div>
